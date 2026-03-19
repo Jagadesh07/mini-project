@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply min-h-screen bg-mist bg-grid bg-[size:24px_24px] font-sans text-slate-700;
+  background-image:
+    radial-gradient(circle at top left, rgba(255, 107, 74, 0.22), transparent 28%),
+    linear-gradient(135deg, rgba(15, 139, 141, 0.1), transparent 45%),
+    radial-gradient(circle at bottom right, rgba(242, 193, 78, 0.18), transparent 25%),
+    radial-gradient(circle at 1px 1px, rgba(16,22,38,0.08) 1px, transparent 0);
+}
+
+input,
+textarea,
+select,
+button {
+  @apply transition duration-200;
+}
