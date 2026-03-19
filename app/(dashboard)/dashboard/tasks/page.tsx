@@ -1,6 +1,7 @@
 import { Card } from "@/components/card";
 import { DashboardPageHeader } from "@/components/dashboard-page-header";
 import { TaskStatusSelect } from "@/components/task-status-select";
+import { TaskTimelineView } from "@/components/task-timeline-view";
 import { getDashboardPageData } from "@/lib/dashboard-page-data";
 
 export default async function TasksPage({
@@ -25,7 +26,21 @@ export default async function TasksPage({
         description="Search, filter, and update active work across the workspace."
       />
 
-      <Card title="Task Board" eyebrow="Operations" className="animate-rise-delay-1">
+      <Card title="Timeline & Calendar" eyebrow="Schedule" className="animate-rise-delay-1">
+        <TaskTimelineView
+          tasks={filteredTasks.map((task: any) => ({
+            _id: String(task._id),
+            title: task.title,
+            status: task.status,
+            priority: task.priority,
+            deadline: new Date(task.deadline).toISOString(),
+            project: task.project ? { title: task.project.title } : null,
+            assignedTo: task.assignedTo ? { name: task.assignedTo.name } : null
+          }))}
+        />
+      </Card>
+
+      <Card title="Task Board" eyebrow="Operations" className="animate-rise-delay-2">
         <form className="mb-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
           <input name="search" defaultValue={searchParams.search || ""} placeholder="Search tasks" className="w-full rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 dark:border-slate-700" />
           <select name="status" defaultValue={searchParams.status || ""} className="w-full rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 dark:border-slate-700">

@@ -7,6 +7,14 @@ const NotificationSchema = new Schema({
     required: true,
     index: true
   },
+  type: {
+    type: String,
+    enum: ["assignment", "status_change", "deadline", "project_update", "system"],
+    default: "system",
+    index: true
+  },
+  title: { type: String, default: "Notification", trim: true },
+  details: { type: String, default: "", trim: true },
   message: { type: String, required: true, trim: true },
   read: { type: Boolean, default: false, index: true },
   relatedTask: { type: Schema.Types.ObjectId, ref: "Task", default: null },

@@ -43,6 +43,9 @@ export async function getDashboardPageData() {
     notifications: notifications.map((item: any) => ({
       ...item,
       _id: String(item._id),
+      type: item.type || "system",
+      title: item.title || item.message || "Notification",
+      details: item.details || "",
       createdAt: new Date(item.createdAt).toISOString()
     })),
     users: users.map((member: any) => ({

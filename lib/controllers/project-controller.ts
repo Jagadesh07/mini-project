@@ -28,12 +28,16 @@ async function ensureMembersExist(memberIds: string[]) {
   }
 }
 
+function buildAccessibleProjectQuery(user: { id: string; role: string }) {
+  return user.role === "Admin"
+    ? { isDeleted: false }
+    : { isDeleted: false, $or: [{ createdBy: user.id }, { members: user.id }] };
+}
+
 export async function listProjects() {
   await connectToDatabase();
   const user = requireAuth();
-  const query = user.role === "Admin"
-    ? { isDeleted: false }
-    : { isDeleted: false, $or: [{ createdBy: user.id }, { members: user.id }] };
+  const query = buildAccessibleProjectQuery(user);
 
   const projects = await Project.find(query)
     .populate("createdBy", "name email role")
@@ -41,6 +45,61 @@ export async function listProjects() {
     .sort({ createdAt: -1 });
 
   return projects;
+}
+
+export async function getProjectById(id: string) {
+  await connectToDatabase();
+  const user = requireAuth();
+  const project = await Project.findOne({ _id: id, ...buildAccessibleProjectQuery(user) })
+    .populate("createdBy", "name email role")
+    .populate("members", "name email role")
+    .lean();
+
+  if (!project) {
+    throw new AppError("Project not found", 404);
+  }
+
+  const tasks = await Task.find({ project: id })
+    .populate("assignedTo", "name email role")
+    .sort({ deadline: 1 })
+    .lean();
+
+  const summary = {
+    totalTasks: tasks.length,
+    todo: tasks.filter((task: any) => task.status === "Todo").length,
+    inProgress: tasks.filter((task: any) => task.status === "In Progress").length,
+    completed: tasks.filter((task: any) => task.status === "Completed").length,
+    overdue: tasks.filter((task: any) => task.status !== "Completed" && new Date(task.deadline).getTime() < Date.now()).length
+  };
+
+  return {
+    project: {
+      ...project,
+      _id: String((project as any)._id),
+      createdBy: project.createdBy
+        ? {
+            ...(project.createdBy as any),
+            _id: String((project.createdBy as any)._id)
+          }
+        : null,
+      members: (project.members || []).map((member: any) => ({
+        ...member,
+        _id: String(member._id)
+      }))
+    },
+    tasks: tasks.map((task: any) => ({
+      ...task,
+      _id: String(task._id),
+      deadline: new Date(task.deadline).toISOString(),
+      assignedTo: task.assignedTo
+        ? {
+            ...task.assignedTo,
+            _id: String(task.assignedTo._id)
+          }
+        : null
+    })),
+    summary
+  };
 }
 
 export async function createProject(request: NextRequest) {
@@ -109,9 +168,7 @@ export async function deleteProject(id: string) {
 export async function getProjectAnalytics() {
   await connectToDatabase();
   const user = requireAuth();
-  const projectMatch = user.role === "Admin"
-    ? { isDeleted: false }
-    : { isDeleted: false, $or: [{ createdBy: user.id }, { members: user.id }] };
+  const projectMatch = buildAccessibleProjectQuery(user);
 
   const [projects, tasks, members] = await Promise.all([
     Project.countDocuments(projectMatch),
