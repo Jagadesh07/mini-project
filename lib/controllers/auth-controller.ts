@@ -11,17 +11,62 @@ import {
 import { User } from "@/models/User";
 import { buildAccessCookie, buildRefreshCookie, clearAuthCookies } from "@/utils/cookies";
 import { AppError } from "@/utils/errors";
-import { forgotPasswordSchema, loginSchema, registerSchema } from "@/validations/auth";
+import { forgotPasswordSchema, loginSchema, profileSchema, registerSchema } from "@/validations/auth";
 import { parseBody } from "@/lib/api/parse-body";
 import { NextRequest } from "next/server";
 import { AuthUser, Role } from "@/types";
 
-function serializeUser(user: { _id: string; email: string; role: string; name: string }): AuthUser {
+function serializeUser(user: any): AuthUser {
   return {
-    id: user._id,
+    id: String(user._id),
     email: user.email,
     role: user.role as Role,
-    name: user.name
+    name: user.name,
+    avatarUrl: user.avatarUrl || null,
+    jobTitle: user.jobTitle || "",
+    bio: user.bio || "",
+    phone: user.phone || "",
+    location: user.location || ""
+  };
+}
+
+export async function getCurrentUserProfile(userId: string) {
+  await connectToDatabase();
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  return serializeUser(user);
+}
+
+export async function updateCurrentUserProfile(userId: string, request: NextRequest) {
+  await connectToDatabase();
+  const payload = await parseBody(request, profileSchema);
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  user.name = payload.name;
+  user.avatarUrl = payload.avatarUrl || null;
+  user.jobTitle = payload.jobTitle || "";
+  user.bio = payload.bio || "";
+  user.phone = payload.phone || "";
+  user.location = payload.location || "";
+
+  const safeUser = serializeUser(user);
+  const accessToken = createAccessToken(safeUser);
+  const refreshToken = createRefreshToken(safeUser);
+
+  user.refreshToken = refreshToken;
+  await user.save();
+
+  return {
+    user: safeUser,
+    cookies: [buildAccessCookie(accessToken), buildRefreshCookie(refreshToken)]
   };
 }
 

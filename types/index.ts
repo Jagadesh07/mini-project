@@ -14,4 +14,9 @@ export interface AuthUser {
   email: string;
   role: Role;
   name: string;
+  avatarUrl?: string | null;
+  jobTitle?: string | null;
+  bio?: string | null;
+  phone?: string | null;
+  location?: string | null;
 }

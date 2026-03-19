@@ -29,7 +29,7 @@ export function TaskStatusSelect({
       disabled={disabled}
       defaultValue={currentStatus}
       onChange={(event) => updateStatus(event.target.value)}
-      className="rounded-full border border-slate-200 px-3 py-2 text-xs disabled:bg-slate-100"
+      className="w-full rounded-full border border-slate-200 px-3 py-2 text-xs disabled:bg-slate-100 sm:w-auto dark:border-slate-700 dark:disabled:bg-slate-800"
     >
       {statuses.map((status) => (
         <option key={status} value={status}>{status}</option>

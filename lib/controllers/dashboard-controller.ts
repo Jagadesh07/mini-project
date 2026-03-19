@@ -24,11 +24,20 @@ export async function getDashboardMetrics() {
     (task) => task.status !== "Completed" && new Date(task.deadline).getTime() < Date.now()
   ).length;
 
-  const taskStats = [
-    { name: "Todo", value: tasks.filter((task) => task.status === "Todo").length },
-    { name: "In Progress", value: tasks.filter((task) => task.status === "In Progress").length },
-    { name: "Completed", value: tasks.filter((task) => task.status === "Completed").length }
-  ];
+  const taskCountsByProject = tasks.reduce<Record<string, number>>((accumulator, task: any) => {
+    const projectId = String(task.project?._id || task.project || "");
+    if (!projectId) {
+      return accumulator;
+    }
+
+    accumulator[projectId] = (accumulator[projectId] || 0) + 1;
+    return accumulator;
+  }, {});
+
+  const taskStats = projects.map((project: any) => ({
+    name: project.title,
+    value: taskCountsByProject[String(project._id)] || 0
+  }));
 
   return {
     summary: {

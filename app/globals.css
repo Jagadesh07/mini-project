@@ -4,15 +4,68 @@
 
 :root {
   color-scheme: light;
+  --page-text: #334155;
+  --page-bg:
+    radial-gradient(circle at top left, rgba(255, 122, 89, 0.24), transparent 24%),
+    radial-gradient(circle at 85% 12%, rgba(15, 139, 141, 0.18), transparent 22%),
+    radial-gradient(circle at bottom left, rgba(242, 193, 78, 0.18), transparent 20%),
+    linear-gradient(180deg, #eef6ff 0%, #f7f4ed 52%, #eef5f2 100%);
+  --grid-line: rgba(16, 22, 38, 0.04);
+  --panel-border: rgba(255, 255, 255, 0.6);
+  --panel-bg: rgba(255, 255, 255, 0.7);
+  --panel-shadow: 0 22px 70px rgba(19, 38, 69, 0.14);
+  --mesh-bg:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.75), transparent 38%),
+    linear-gradient(135deg, rgba(255,255,255,0.84), rgba(255,255,255,0.58));
+  --field-bg: rgba(255, 255, 255, 0.88);
+  --field-border: rgba(203, 213, 225, 0.9);
+  --field-text: #0f172a;
+  --muted-text: #64748b;
+}
+
+html.dark {
+  color-scheme: dark;
+  --page-text: #dbe7f3;
+  --page-bg:
+    radial-gradient(circle at top left, rgba(255, 107, 74, 0.16), transparent 24%),
+    radial-gradient(circle at 85% 12%, rgba(15, 139, 141, 0.14), transparent 22%),
+    radial-gradient(circle at bottom left, rgba(242, 193, 78, 0.12), transparent 20%),
+    linear-gradient(180deg, #07111d 0%, #0a1625 45%, #0d1b2d 100%);
+  --grid-line: rgba(148, 163, 184, 0.08);
+  --panel-border: rgba(148, 163, 184, 0.18);
+  --panel-bg: rgba(10, 18, 33, 0.72);
+  --panel-shadow: 0 24px 70px rgba(2, 6, 23, 0.5);
+  --mesh-bg:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.04), transparent 34%),
+    linear-gradient(135deg, rgba(9,18,31,0.95), rgba(12,24,40,0.82));
+  --field-bg: rgba(15, 23, 42, 0.78);
+  --field-border: rgba(71, 85, 105, 0.8);
+  --field-text: #e2e8f0;
+  --muted-text: #94a3b8;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  @apply min-h-screen bg-mist bg-grid bg-[size:24px_24px] font-sans text-slate-700;
+  min-height: 100vh;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--page-text);
+  background: var(--page-bg);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
   background-image:
-    radial-gradient(circle at top left, rgba(255, 107, 74, 0.22), transparent 28%),
-    linear-gradient(135deg, rgba(15, 139, 141, 0.1), transparent 45%),
-    radial-gradient(circle at bottom right, rgba(242, 193, 78, 0.18), transparent 25%),
-    radial-gradient(circle at 1px 1px, rgba(16,22,38,0.08) 1px, transparent 0);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(circle at center, black 45%, transparent 88%);
 }
 
 input,
@@ -20,4 +73,101 @@ textarea,
 select,
 button {
   @apply transition duration-200;
+}
+
+input,
+textarea,
+select {
+  background: var(--field-bg);
+  border-color: var(--field-border);
+  color: var(--field-text);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted-text);
+}
+
+button:hover,
+input:hover,
+textarea:hover,
+select:hover {
+  transform: translateY(-1px);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.06); }
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+.animate-float-slow {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 9s ease-in-out infinite;
+  animation-delay: 1.2s;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.animate-rise {
+  animation: riseIn 0.7s ease-out both;
+}
+
+.animate-rise-delay-1 {
+  animation: riseIn 0.7s ease-out 0.08s both;
+}
+
+.animate-rise-delay-2 {
+  animation: riseIn 0.7s ease-out 0.16s both;
+}
+
+.animate-rise-delay-3 {
+  animation: riseIn 0.7s ease-out 0.24s both;
+}
+
+.glass-panel {
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--panel-shadow);
+}
+
+.mesh-card {
+  background: var(--mesh-bg);
+}
+
+.shimmer-line {
+  background: linear-gradient(90deg, rgba(15,139,141,0.08), rgba(255,107,74,0.26), rgba(15,139,141,0.08));
+  background-size: 200% 100%;
+  animation: shimmer 4s linear infinite;
+}
+
+html.dark .shimmer-line {
+  background: linear-gradient(90deg, rgba(15,139,141,0.18), rgba(255,107,74,0.36), rgba(15,139,141,0.18));
+  background-size: 200% 100%;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(4px);
 }

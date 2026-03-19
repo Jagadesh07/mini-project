@@ -31,21 +31,21 @@ export function CreateProjectForm({
   }
 
   return (
-    <form action={async (formData) => handleSubmit(formData)} className="space-y-3">
-      <input name="title" placeholder="Website Redesign" className="w-full rounded-2xl border border-slate-200 px-4 py-3" required />
-      <textarea name="description" placeholder="Outline the business and delivery goals" className="min-h-28 w-full rounded-2xl border border-slate-200 px-4 py-3" required />
-      <div className="space-y-2 rounded-2xl border border-slate-200 p-4">
-        <p className="text-sm font-medium text-slate-700">Add project members</p>
-        <select name="members" multiple className="min-h-36 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none">
+    <form action={async (formData) => handleSubmit(formData)} className="min-w-0 space-y-3">
+      <input name="title" placeholder="Website Redesign" className="w-full rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-700" required />
+      <textarea name="description" placeholder="Outline the business and delivery goals" className="min-h-28 w-full rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-700" required />
+      <div className="space-y-2 rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
+        <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Add project members</p>
+        <select name="members" multiple className="min-h-36 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none dark:border-slate-700">
           {users.map((user) => (
             <option key={user._id} value={user._id}>
               {user.name} ({user.role}) - {user.email}
             </option>
           ))}
         </select>
-        <p className="text-xs text-slate-500">Hold Ctrl or Cmd to select multiple members.</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">Hold Ctrl or Cmd to select multiple members.</p>
       </div>
-      <button disabled={loading} className="rounded-2xl bg-teal px-4 py-3 text-sm font-semibold text-white disabled:opacity-60">
+      <button disabled={loading} className="w-full rounded-2xl bg-teal px-4 py-3 text-sm font-semibold text-white disabled:opacity-60 sm:w-auto">
         {loading ? "Creating..." : "Create Project"}
       </button>
     </form>

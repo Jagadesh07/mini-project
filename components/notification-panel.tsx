@@ -12,7 +12,7 @@ function NotificationTime({ createdAt }: { createdAt: string }) {
     setFormatted(new Date(createdAt).toLocaleString());
   }, [createdAt]);
 
-  return <p className="mt-1 text-xs text-slate-500">{formatted}</p>;
+  return <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{formatted}</p>;
 }
 
 export function NotificationPanel({
@@ -33,20 +33,20 @@ export function NotificationPanel({
 
   return (
     <div className="space-y-3">
-      {notifications.length === 0 ? <p className="text-sm text-slate-500">No notifications yet.</p> : null}
+      {notifications.length === 0 ? <p className="text-sm text-slate-500 dark:text-slate-400">No notifications yet.</p> : null}
       {notifications.map((notification) => (
-        <div key={notification._id} className="rounded-2xl border border-slate-200 p-4">
+        <div key={notification._id} className="rounded-2xl border border-slate-200 bg-white/40 p-4 dark:border-slate-700 dark:bg-slate-950/35">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-medium text-ink">{notification.message}</p>
+              <p className="text-sm font-medium text-ink dark:text-slate-100">{notification.message}</p>
               <NotificationTime createdAt={notification.createdAt} />
             </div>
             {!notification.read ? (
-              <button onClick={() => markRead(notification._id)} className="rounded-full bg-ink px-3 py-1 text-xs text-white">
+              <button onClick={() => markRead(notification._id)} className="rounded-full bg-ink px-3 py-1 text-xs text-white dark:bg-slate-100 dark:text-slate-950">
                 Mark read
               </button>
             ) : (
-              <span className="text-xs text-teal">Read</span>
+              <span className="text-xs text-teal dark:text-teal/90">Read</span>
             )}
           </div>
         </div>

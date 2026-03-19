@@ -5,27 +5,30 @@ import { checkRateLimit } from "@/utils/rate-limit";
 const protectedPrefixes = ["/dashboard", "/api/projects", "/api/tasks", "/api/dashboard", "/api/notifications"];
 
 export function middleware(request: NextRequest) {
-  const ip = request.ip || request.headers.get("x-forwarded-for") || "anonymous";
-  const rateLimit = checkRateLimit(ip);
+  const pathname = request.nextUrl.pathname;
+  const isApiRequest = pathname.startsWith("/api/");
 
-  if (!rateLimit.allowed) {
-    return NextResponse.json(
-      {
-        success: false,
-        data: null,
-        message: "Too many requests",
-        error: "Rate limit exceeded"
-      },
-      { status: 429 }
-    );
+  if (isApiRequest) {
+    const ip = request.ip || request.headers.get("x-forwarded-for") || "anonymous";
+    const rateLimit = checkRateLimit(`${ip}:${pathname}`);
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          data: null,
+          message: "Too many requests",
+          error: "Rate limit exceeded"
+        },
+        { status: 429 }
+      );
+    }
   }
 
-  const isProtected = protectedPrefixes.some((prefix) =>
-    request.nextUrl.pathname.startsWith(prefix)
-  );
+  const isProtected = protectedPrefixes.some((prefix) => pathname.startsWith(prefix));
 
   if (isProtected && !request.cookies.get("stm_access")?.value) {
-    if (request.nextUrl.pathname.startsWith("/api/")) {
+    if (isApiRequest) {
       return NextResponse.json(
         {
           success: false,

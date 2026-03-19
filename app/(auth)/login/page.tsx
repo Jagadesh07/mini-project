@@ -3,19 +3,21 @@ import { AuthForm } from "@/components/auth-form";
 
 export default function LoginPage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl items-center gap-10 px-6 py-16 lg:grid lg:grid-cols-[1.1fr_0.9fr]">
-      <section>
-        <p className="text-sm uppercase tracking-[0.4em] text-teal">Smart Ops</p>
-        <h1 className="mt-4 font-display text-5xl leading-tight text-ink">Run projects, tasks and notifications from one operational cockpit.</h1>
-        <p className="mt-6 max-w-xl text-lg text-slate-600">
-          JWT auth, RBAC, MongoDB-backed projects, real-time task notifications and an opinionated dashboard are all wired into this starter.
-        </p>
-      </section>
-      <section>
-        <AuthForm mode="login" />
-        <p className="mt-4 text-sm text-slate-500">
-          Need an account? <Link href="/register" className="font-semibold text-coral">Create one here</Link>
-        </p>
+    <main className="mx-auto flex min-h-screen max-w-2xl items-center px-4 py-8 sm:px-6 sm:py-10 lg:px-10">
+      <section className="animate-rise w-full">
+        <div className="glass-panel mesh-card rounded-[2rem] p-6 sm:rounded-[2.4rem] sm:p-8 lg:p-10">
+          <p className="text-xs uppercase tracking-[0.32em] text-teal">Project Xeno Access</p>
+          <h1 className="mt-3 font-display text-3xl text-ink dark:text-slate-100 sm:text-4xl">Sign in to Project Xeno</h1>
+          <p className="mt-3 max-w-xl text-sm text-slate-600 dark:text-slate-300 sm:text-base">
+            Managers orchestrate delivery, admins shape governance, and members move work with clarity.
+          </p>
+          <div className="mt-6 sm:mt-8">
+            <AuthForm mode="login" />
+          </div>
+          <p className="mt-6 px-1 text-sm text-slate-500 dark:text-slate-400 sm:px-2">
+            Need an account? <Link href="/register" className="font-semibold text-coral">Create one here</Link>
+          </p>
+        </div>
       </section>
     </main>
   );

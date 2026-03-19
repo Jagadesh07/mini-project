@@ -10,6 +10,11 @@ const UserSchema = new Schema(
       enum: ["Admin", "Manager", "Member"],
       default: "Member"
     },
+    avatarUrl: { type: String, default: null },
+    jobTitle: { type: String, default: "" },
+    bio: { type: String, default: "" },
+    phone: { type: String, default: "" },
+    location: { type: String, default: "" },
     refreshToken: { type: String, default: null }
   },
   { timestamps: true }
